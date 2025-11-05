@@ -1,6 +1,5 @@
 import os
 
-from cryptography import fernet
 from cryptography.fernet import Fernet
 
 
@@ -23,3 +22,7 @@ def encrypt_password(password: str) -> bytes:
 
 def decrypt_password(encrypted_password: bytes) -> str:
     return fernet.decrypt(encrypted_password).decode()
+
+
+
+fernet = Fernet(load_key())

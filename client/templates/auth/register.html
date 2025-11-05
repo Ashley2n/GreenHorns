@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Register Form</title>
 </head>
-<body>
+{% extends 'layout.html' %}
+
     {% block content %}
 
         <h1>Register Form</h1>
@@ -15,7 +16,10 @@
             {% endfor %}
         {% endwith %}
 
-        <form method="POST" action="{{ url_for('register') }}">
+        <form method="POST" action="{{ url_for('register') }}" class="bg-neutral-300 shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md mx-auto
+    [&>input]:mt-1 p-2 block w-full rounded-md border [&>legend]:bg-blue-500 outline-none [&>input]:border-red-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+    space-y-4">
+
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
 
             {{ form.hidden_tag() }}
@@ -33,7 +37,6 @@
                 {{ form.submit() }}
         </form>
 
-        <p>Already have an account <a href="{{ url_for('login') }}">Login</a></p>
+        <p >Already have an account <a href="{{ url_for('login') }}" class="underline text-blue-400">Login</a></p>
 {% endblock %}
-</body>
 </html>

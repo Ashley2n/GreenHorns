@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login Form</title>
-</head>
-<body class="bg-gray-100">
+{% extends 'layout.html' %}
     {% block content %}
         <h1>Login Form</h1>
 
@@ -15,19 +9,20 @@
         {% endwith %}
 
         <form method="POST" action="{{ url_for('login') }}"
-        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md mx-auto
+        class="bg-neutral-300 shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md mx-auto
+
 
 
 [&>input]:mt-1 p-2 block w-full rounded-md border [&>legend]:bg-blue-500 outline-none [&>input]:border-red-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
-
+ space-y-4
 ">
-            <legend class="text-lg font-semibold mb-4">
+            <legend class="text-lg font-semibold mb-4 text-center">
                 Login Form
             </legend>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
             {{ form.hidden_tag() }}
             <div>
-                {{ form.email.label }} {{ form.email() }}
+                {{ form.username.label }} {{ form.username() }}
             </div>
 
             <div>
@@ -37,7 +32,5 @@
                 {{ form.submit() }}
         </form>
 
-        <p>Don't have an Account <a href="{{ url_for('register') }}">Register</a></p>
+        <p>Don't have an Account <a href="{{ url_for('register') }}" class="underline text-blue-400 ">Register</a></p>
     {% endblock %}
-</body>
-</html>
