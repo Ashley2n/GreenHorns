@@ -40,7 +40,7 @@ A Flask-based web application that transforms cooking into an engaging single-pl
 ```bash
     python -m venv venv
 ```
-- On Windows: venv\Scripts\activate
+- On Windows: .venv\Scripts\activate
 ```bash
     source venv/bin/activate  
 
