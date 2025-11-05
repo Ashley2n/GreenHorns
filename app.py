@@ -1,6 +1,5 @@
 from flask import Flask, render_template
-from models import *
-from seed_data import campaigns_hc
+from domain.models import *
 
 app = Flask(__name__)
 app.secret_key = 'BasicFlashSetup'
