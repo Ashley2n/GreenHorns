@@ -72,8 +72,8 @@ coverage.xml
 .hypothesis/
 
 # Static files (if you want to ignore generated files)
-static/uploads/*
-!static/uploads/.gitkeep
+client/static/uploads/*
+!client/static/uploads/.gitkeep
 
 # Flask specific
 .flaskenv
