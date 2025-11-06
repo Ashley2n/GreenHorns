@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CookQuest</title>
+</head>
+{% extends 'layout.html' %}
+    {% block content %}
+
+        <main class="mt-10 h-screen">
+        <header role="title-banner">
+            <h1 id="cook-quest" class="text-7xl gap-10">CookQuest</h1>
+            <h4 class="mt-6">ByteJam 2025</h4>
+        </header>
+
+        <section class="mt-15 gap-15 grid grid-col-3 justify-center">
+            <!-- idk whether this will be a button itself or just linked to the page -->
+            <a href="#" class="py-2 px-4 w-40 h-15" aria-label="1v1">1v1</a>
+            <a href="#" class="py-2 px-4 w-45 h-15" aria-label="campaign">Campaign</a>
+            <a href="#" class="text-2xl py-2 px-4 w-40 h-15" aria-label="credits"> Credits</a>
+        </section>
+        </main>
+{% endblock %}
+
+</html>
