@@ -2,13 +2,17 @@
 {% extends 'layout.html' %}
 {% block content %}
 <h2>Analyze Single Image</h2>
-    <form action="/analyze" method="post" enctype="multipart/form-data">
+    <form action="/analyze" method="post" enctype="multipart/form-data" class="flex bg-red-200">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+            {{ form.hidden_tag() }}
         <input type="file" name="image" required>
         <button type="submit">Analyze</button>
     </form>
 
     <h2>Compare Two Images</h2>
-    <form action="/compare" method="post" enctype="multipart/form-data">
+    <form action="/compare" method="post" enctype="multipart/form-data" class="flex bg-blue-200">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
+            {{ form.hidden_tag() }}
         <input type="file" name="image1" required>
         <input type="file" name="image2" required>
         <button type="submit">Compare</button>

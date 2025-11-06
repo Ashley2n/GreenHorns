@@ -12,7 +12,7 @@ from image_analyzer import analyze_image, compare_images
 
 app = Flask(__name__, template_folder='client/templates')
 app.secret_key = 'CookQuestApp001'
-# app.config['UPLOAD_FOLDER'] = 'client/static/uploads'
+app.config['UPLOAD_FOLDER'] = 'client/static/uploads'
 
 csrf = CSRFProtect(app)
 
@@ -83,38 +83,40 @@ def logout():
     flash("You have been logged out", "success")
     return redirect(url_for('landing'))
 
-#
-# @app.route('/analyze', methods=['POST'])
-# def analyze():
-#     if 'image' not in request.files:
-#         return "No file uploaded", 400
-#
-#     file = request.files['image']
-#     if file.filename == '':
-#         return "No selected file", 400
-#
-#     image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-#     file.save(image_path)
-#
-#     results = analyze_image(image_path)
-#
-#     return render_template('result.html', results=results, filename=file.filename)
-#
-#
-# @app.route('/compare', methods=['POST'])
-# def compare():
-#     img1 = request.files['image1']
-#     img2 = request.files['image2']
-#
-#     path1 = os.path.join(app.config['UPLOAD_FOLDER'], img1.filename)
-#     path2 = os.path.join(app.config['UPLOAD_FOLDER'], img2.filename)
-#
-#     img1.save(path1)
-#     img2.save(path2)
-#
-#     similarity = compare_images(path1, path2)
-#
-#     return render_template('result.html', similarity=similarity)
+
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    if 'image' not in request.files:
+        return "No file uploaded", 400
+
+    file = request.files['image']
+    if file.filename == '':
+        return "No selected file", 400
+
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(image_path)
+
+    results = analyze_image(image_path)
+
+    return render_template('result.html', results=results, filename=file.filename)
+
+@app.route('/upload')
+def upload():
+    return render_template('game/upload.html')
+@app.route('/compare', methods=['POST'])
+def compare():
+    img1 = request.files['image1']
+    img2 = request.files['image2']
+
+    path1 = os.path.join(app.config['UPLOAD_FOLDER'], img1.filename)
+    path2 = os.path.join(app.config['UPLOAD_FOLDER'], img2.filename)
+
+    img1.save(path1)
+    img2.save(path2)
+
+    similarity = compare_images(path1, path2)
+
+    return render_template('result.html', similarity=similarity)
 
 @app.route('/dashboard/game')
 def game_dashboard():
@@ -125,7 +127,7 @@ def load_user(user_id):
     return get_user_by_id_ser(user_id)
 
 if __name__ == "__main__":
-    # os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     app.run(debug=True)
 
 # hello :D
