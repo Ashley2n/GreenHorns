@@ -2,13 +2,15 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 from flask_login import logout_user, LoginManager, login_user
 from flask_wtf import CSRFProtect
 
+from APIs.api_recipes_call import load_more_recipes
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser
 from domain.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
 from helper_functions import decrypt_password, encrypt_password
 
-app = Flask(__name__, template_folder='C:/Users/awind/Documents/GreenHorns/client/templates')
+app = Flask(__name__, template_folder='client/templates', static_folder='client/static')
+
 app.secret_key = 'CookQuestApp001'
 
 csrf = CSRFProtect(app)
@@ -84,9 +86,25 @@ def logout():
 def game_dashboard():
     return render_template('game/dashboard.html')
 
+@app.route('/game/game_screen')
+def game_screen():
+    return render_template('game/game_screen.html')
+
+@app.route('/game/level_select')
+def level_select():
+    return render_template('game/level_select.html')
+
+@app.route('/game/campaign/<cuisine>')
+def campaign(cuisine):
+    get_cuisines = load_more_recipes(cuisine)
+
+    print(cuisine)
+    return render_template('game/campaign.html', cuisine=get_cuisines)
+
 @login_manager.user_loader
 def load_user(user_id):
     return get_user_by_id_ser(user_id)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

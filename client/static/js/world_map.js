@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const globeDiv = document.getElementById('globeViz');
 
     const globe = Globe()(globeDiv)
-        .globeImageUrl('//cdn.jsdelivr.net/npm/three-globe/example/img/earth-dark.jpg')
+        .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-dark.jpg')
         //.hexPolygonsData(cuisineLocations)
         //.hexPolygonResolution(3)
         //.hexPolygonMargin(0.4)
@@ -43,9 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
         .pointAltitude(0.04)
         .pointColor(() => 'white')
         .pointLabel(d => d.name)
-        .onPointClick(d => alert(`Show recipes for ${d.name}!`));
+        .onPointClick(d => {
+            window.location.href = `campaign/${d.name}`
+    });
 
     globe.controls().autoRotate = true;
     globe.controls().autoRotateSpeed = 0.3;
 });
 //}
+
+function getCuisine(){
+
+}
