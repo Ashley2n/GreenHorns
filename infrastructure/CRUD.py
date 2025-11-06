@@ -1,6 +1,6 @@
 from domain.models import *
 
-def create_user_repo(session, username, hashed_password, email):
+def create_user_repo(session, username, hashed_password, email=''):
     user = User(username=username, password_hash=hashed_password, email=email)
     session.add(user)
     session.commit()

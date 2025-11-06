@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+    {% block content %}
+
+{% if results %}
+    <h3>Analysis Results</h3>
+    <img src="{{ url_for('static', filename='uploads/' + filename) }}" width="300">
+    <ul>
+        <li>Average Color: <span style="color: {{ results['average_color'] }}">{{ results['average_color'] }}</span></li>
+        <li>Brightness: {{ results['brightness'] }}</li>
+        <li>Overcooked %: {{ results['overcooked_percent'] }}%</li>
+    </ul>
+    {% endif %}
+
+    {% if similarity %}
+    <h3>Comparison Similarity</h3>
+    <p>Images are {{ similarity }}% similar</p>
+    {% endif %}
+
+    <a href="/">Upload Another</a>
+{% endblock %}
