@@ -8,7 +8,7 @@ from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
 from helper_functions import decrypt_password, encrypt_password
 
-app = Flask(__name__, template_folder='C:/Users/awind/Documents/GreenHorns/client/templates')
+app = Flask(__name__, template_folder='client/templates')
 app.secret_key = 'CookQuestApp001'
 
 csrf = CSRFProtect(app)
