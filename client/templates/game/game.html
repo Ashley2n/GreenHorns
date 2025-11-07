@@ -2,15 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game</title>
-    <link rel="stylesheet" href="../../static/css/game.css">
+    <title>Game Screen</title>
 </head>
-<body>
-    <h1>STEP:</h1>
-    <h2>INGREDIENTS:</h2>
-    <h3>UTENSILS:</h3>
-    <h4>APPLIANCES:</h4>
-    <button>PREV. STEP</button>
-    <button>NEXT STEP</button>
-</body>
+
+
+{% extends 'layout.html' %}
+{% block content %}
+    {% if data != None%}
+        <main class="container p-4 mx-auto mt-5 min-w-screen w-full">
+        <div class=" space-y-8">
+
+        <div class="space-y-2">
+            <p>Prep Time: {{ data.prep_time }}</p>
+            <p>servings: {{ data.servings }}</p>
+            <p>difficulty: {{ data.difficulty }}</p>
+            <p>cuisine: {{ data.cuisine }}</p>
+            <p>caloriesPerServing: {{ data.caloriesPerServing }}</p>
+            <p>rating: {{ data.rating }}</p>
+            <p>mealType: {{ data.mealType }}</p>
+        </div>
+
+
+        <ul class="">
+            <p>STEP </p>
+            {% for step in data.instructions %}
+                <li>- {{ step }}</li>
+            {% endfor %}
+        </ul>
+
+        <ul>
+            <p>INGREDIENTS</p>
+            {% for step in data.ingredients %}
+                <li>- {{ step }}</li>
+            {% endfor %}
+        </ul>
+
+
+
+
+
+        <div class="flex justify-between px-24">
+            <button class="px-4 py-2 rounded-md bg-neutral-800 text-neutral-300"> <- Prev</button>
+            <button class="px-4 py-2 rounded-md bg-neutral-800 text-neutral-300"> Next -></button>
+        </div>
+        </div>
+        </main>
+    {% else %}
+    <div>Not recipes selected</div>
+    {% endif %}
+{% endblock %}
 </html>
