@@ -3,7 +3,10 @@ from flask_login import logout_user, LoginManager, login_user
 from flask_wtf import CSRFProtect
 import os
 
+from werkzeug.utils import secure_filename
+
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser
+from client.forms.ImageUploadForm import ImageUploadForm
 from domain.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
@@ -84,39 +87,63 @@ def logout():
     return redirect(url_for('landing'))
 
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    if 'image' not in request.files:
-        return "No file uploaded", 400
+@app.route('/compare_images/<int:cuisine_id>', methods=['GET', 'POST'])
+def upload_page(cusine_id):
+    form = ImageUploadForm()
+    results = None
+    similarity = None
 
-    file = request.files['image']
-    if file.filename == '':
-        return "No selected file", 400
+    if form.validate_on_submit():
+        file = form.image.data
+        filename = secure_filename(file.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(image_path)
 
-    image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(image_path)
+        # Example API call to get reference image
+        # Getting Image from API
 
-    results = analyze_image(image_path)
 
-    return render_template('result.html', results=results, filename=file.filename)
 
-@app.route('/upload')
-def upload():
-    return render_template('game/upload.html')
-@app.route('/compare', methods=['POST'])
-def compare():
-    img1 = request.files['image1']
-    img2 = request.files['image2']
+        # Analyze and compare
+        results = analyze_image(image_path)
+        similarity = compare_images(image_path, reference_path)
 
-    path1 = os.path.join(app.config['UPLOAD_FOLDER'], img1.filename)
-    path2 = os.path.join(app.config['UPLOAD_FOLDER'], img2.filename)
+    return render_template('upload.html', form=form, results=results, similarity=similarity)
 
-    img1.save(path1)
-    img2.save(path2)
 
-    similarity = compare_images(path1, path2)
-
-    return render_template('result.html', similarity=similarity)
+# @app.route('/analyze', methods=['POST'])
+# def analyze():
+#     if 'image' not in request.files:
+#         return "No file uploaded", 400
+#
+#     file = request.files['image']
+#     if file.filename == '':
+#         return "No selected file", 400
+#
+#     image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+#     file.save(image_path)
+#
+#     results = analyze_image(image_path)
+#
+#     return render_template('result.html', results=results, filename=file.filename)
+#
+# @app.route('/upload')
+# def upload():
+#     return render_template('game/upload.html')
+# @app.route('/compare', methods=['POST'])
+# def compare():
+#     img1 = request.files['image1']
+#     img2 = request.files['image2']
+#
+#     path1 = os.path.join(app.config['UPLOAD_FOLDER'], img1.filename)
+#     path2 = os.path.join(app.config['UPLOAD_FOLDER'], img2.filename)
+#
+#     img1.save(path1)
+#     img2.save(path2)
+#
+#     similarity = compare_images(path1, path2)
+#
+#     return render_template('result.html', similarity=similarity)
 
 @app.route('/dashboard/game')
 def game_dashboard():
