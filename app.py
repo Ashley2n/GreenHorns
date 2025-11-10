@@ -4,23 +4,32 @@ import os
 from flask import Flask, render_template, request, flash, redirect, url_for, session, jsonify
 from flask_login import logout_user, LoginManager, login_user, current_user, login_required
 from flask_wtf import CSRFProtect
+#from fontTools.subset import closure_glyphs
+from werkzeug.utils import secure_filename
 
-
+from APIs.api_recipes_call import load_more_recipes_with_difficulty, load_difficulties, get_all_recipes, \
+    load_more_recipes, load_specific_recipe
 from APIs.api_recipes_call import load_more_recipes
+from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser
+from client.forms.ImageUploadForm import ImageUploadForm
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser, save_user_avatar_ser
 from domain.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
+from helper_functions import decrypt_password, encrypt_password, get_recipe_image
+from image_analyzer import analyze_image, compare_images
 from helper_functions import decrypt_password, encrypt_password, get_json_data_recipe, game_screen_data
 
 app = Flask(__name__, template_folder='client/templates')
 
+app = Flask(__name__, template_folder='client/templates')
 UPLOAD_FOLDER = 'client/static/avatars'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app = Flask(__name__, template_folder='client/templates', static_folder='client/static')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB
 app.secret_key = 'CookQuestApp001'
+app.config['UPLOAD_FOLDER'] = 'client/static/uploads'
 
 csrf = CSRFProtect(app)
 
@@ -91,6 +100,70 @@ def logout():
     flash("You have been logged out", "success")
     return redirect(url_for('home'))
 
+
+@app.route('/compare_images/<int:cuisine_id>', methods=['GET', 'POST'])
+def upload_page(cuisine_id):
+    form = ImageUploadForm()
+    results = None
+    similarity = None
+
+    if form.validate_on_submit():
+        print("Hi welcome to comparing Images")
+        file = form.image.data
+        filename = secure_filename(file.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(image_path)
+
+        # Example API call to get reference image
+        # Getting Image from API
+        reference_path = get_recipe_image(cuisine_id)
+
+
+        # Analyze and compare
+        results = analyze_image(image_path)
+        similarity = compare_images(image_path, reference_path)
+
+        print("References: ", reference_path)
+        print("Results: ", results)
+        print("Similarity: ", similarity)
+
+    return render_template('game/upload.html', form=form, results=results, similarity=similarity)
+
+
+# @app.route('/analyze', methods=['POST'])
+# def analyze():
+#     if 'image' not in request.files:
+#         return "No file uploaded", 400
+#
+#     file = request.files['image']
+#     if file.filename == '':
+#         return "No selected file", 400
+#
+#     image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+#     file.save(image_path)
+#
+#     results = analyze_image(image_path)
+#
+#     return render_template('result.html', results=results, filename=file.filename)
+#
+# @app.route('/upload')
+# def upload():
+#     return render_template('game/uploadtest.html')
+# @app.route('/compare', methods=['POST'])
+# def compare():
+#     img1 = request.files['image1']
+#     img2 = request.files['image2']
+#
+#     path1 = os.path.join(app.config['UPLOAD_FOLDER'], img1.filename)
+#     path2 = os.path.join(app.config['UPLOAD_FOLDER'], img2.filename)
+#
+#     img1.save(path1)
+#     img2.save(path2)
+#
+#     similarity = compare_images(path1, path2)
+#
+#     return render_template('result.html', similarity=similarity)
+
 @csrf.exempt
 @app.route('/save-avatar', methods=['POST'])
 @login_required
@@ -135,34 +208,43 @@ def save_avatar():
 def game_dashboard():
     return render_template('game/dashboard.html')
 
-@app.route('/recipe/data/<int:recipe_id>')
-def recipe_data(recipe_id:int):
-    data = game_screen_data(recipe_id)
-
-    return render_template('game/game.html', data=data)
-
-@app.route('/game/game_screen')
+@app.route('/game/campaign')
 @login_required
-def game_screen():
-    return render_template('game/game_screen.html')
+def campaign():
+    return render_template('game/campaign.html')
 
-@app.route('/game/level_select')
+@app.route('/game/campaign/<difficulty>')
 @login_required
-def level_select():
-    return render_template('game/level_select.html')
+def campaign_difficulty(difficulty):
+    if (difficulty == 'all'):
+        get_all_cuisines = get_all_recipes()
+        render_template('game/level_select.html', cuisine=get_all_cuisines)
+    get_cuisines = load_difficulties(difficulty)
+    #print(get_cuisines)
+    return render_template('game/level_select.html', cuisine=get_cuisines)
+
+@app.route('/game/campaign/<difficulty>/<cuisine>')
+@login_required
+def select(difficulty, cuisine):
+    if difficulty == 'all':
+        get_cuisines = load_more_recipes(cuisine)
+        return render_template('game/select.html', cuisine=get_cuisines)
+    get_cuisines = load_more_recipes_with_difficulty(difficulty, cuisine)
+    return render_template('game/select.html', cuisine=get_cuisines)
 
 @app.route('/avatar-create')
 @login_required
 def avatar_create():
     return render_template('profile/avatar_maker/index.html')
 
-@app.route('/game/campaign/<cuisine>')
+@app.route('/game/game_screen/<id>')
 @login_required
-def campaign(cuisine):
-    get_cuisines = load_more_recipes(cuisine)
+def game_screen(id):
 
-    print(cuisine)
-    return render_template('game/campaign.html', cuisine=get_cuisines)
+    specific_recipe = load_specific_recipe(id)
+    print(specific_recipe)
+
+    return render_template('game/game_screen.html', recipe=specific_recipe)
 
 @login_manager.user_loader
 def load_user(user_id):
