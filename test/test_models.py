@@ -61,13 +61,13 @@ def test_update_user_repo(db_session, sample_user):
     """Test updating user information"""
     updated_user = update_user_repo(
         db_session,
-        "newusername",
+        "sampleuser",
         "newhashedpass",
         "newemail@example.com"
     )
 
-    assert updated_user.username == "newusername"
-    assert updated_user.password_hash == "newhashedpass"
+    assert updated_user.username == "sampleuser"
+    assert updated_user.hashed_password == "newhashedpass"
     assert updated_user.email == "newemail@example.com"
 
 
