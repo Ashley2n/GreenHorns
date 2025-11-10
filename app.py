@@ -1,12 +1,10 @@
 import base64
 import os
-import uuid
 
 from flask import Flask, render_template, request, flash, redirect, url_for, session, jsonify
 from flask_login import logout_user, LoginManager, login_user, current_user, login_required
 from flask_wtf import CSRFProtect
-from fontTools.subset import closure_glyphs
-from werkzeug.utils import secure_filename
+
 
 from APIs.api_recipes_call import load_more_recipes
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser, save_user_avatar_ser
