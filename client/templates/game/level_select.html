@@ -1,19 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+</head>
 {% extends 'layout.html' %}
-
-{% block content %}
+    {% block content %}
     <script src="https://unpkg.com/globe.gl"></script>
     <script src="https://unpkg.com/topojson@3"></script>
-      <style>
-    body { margin: 0; overflow: hidden; background: #000; }
-    #globeViz { width: 100vw; height: 100vh; }
-  </style>
+    <style>
+      body { margin: 0; overflow: hidden; background: #000000; padding: 10px;}
+      #globeViz { width: 100vw; height: 100vh; }
+      main{
+        font-weight: bold; color:#f14400;
+        text-transform: uppercase;
+      }
+      #user-content{
+        background-color: #bcd1f8; border: 5px #75a4fc double;
+        width: 200px; text-align: center; color:#003eb1;
+        text-transform: uppercase; position:absolute; top: 30; right: 16px;
+      }
+      #rec{
+        display: flex;
+        background-color:#fdae4f; border: #e44b19 5px solid ; width: 350px;
+        padding: 10px; position: absolute; bottom: 0; left: 0;
+        color:#f14400;
+      }
+    </style>
 
     <main class="m-auto mt-5">
-        <h2 class="text-center"> Game DashBoard</h2>
+        <h2 class="text-center">Level Select</h2>
     </main>
 
+    <div id="user-content">
+      <h3>User:</h3>
+      <h5>Level: </h5>
+      <img src="#" alt="user">
+      <h5>Countries done:</h5>
+    </div>
+
+    <div id="rec">
+      <h4>Recommended Country: </h4>
+    </div>
+   
 <body>
   <div id="globeViz"></div>
 
-    <script src="{{ url_for('static', filename='js/world_map.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/world_map.js') }}"></script>
 {% endblock %}
+
+</html>
