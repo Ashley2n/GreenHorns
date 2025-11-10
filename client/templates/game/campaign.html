@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ cuisine }} Recipes</title>
+</head>
+<body>
+    {% for recipe in cuisine %}
+    <h1>Recipe: {{ recipe.name}}</h1>
+    <p>Ingredients: {{ recipe.ingredients }}</p>
+    <p>Prep Time: {{ recipe.prepTimeMinutes }}</p>
+    <p>Cook Time: {{ recipe.cookTimeMinutes }}</p>
+    <p>Servings: {{ recipe.servings }}</p>
+    <p>Difficulty: {{ recipe.difficulty }}</p>
+    <p>Calories Per Serving: {{ recipe.caloriesPerServing }}</p>
+    {% endfor %}
+
+    <!-- Example placeholder area for your recipes -->
+
+    <a href="/">Back to Globe</a>
+</body>
+</html>

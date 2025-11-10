@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <h1 id="update-user">Timer</h1>
+    <h1 id="timer">0:30</h1>
+    <button id="start-button">Start</button>
+
+    <input id="upload" type="file" onChange="handleImageUpload()">
+
+    <img id="display-image" src="" />
+
+    <script src="{{ url_for('static', filename="js/in_game_timer.js") }}"></script>
+
+
+{% endblock %}
