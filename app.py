@@ -37,7 +37,7 @@ def login():
                 if decrypted_password == password_input:
                     login_user(user_exist)
                     flash("You Have been Logged In", "success")
-                    return render_template(url_for('game_dashboard'))
+                    return redirect(url_for("game_dashboard"))
             flash("Incorrect email or Password", "danger")
     return render_template('auth/login.html', form=form)
 
@@ -78,7 +78,7 @@ def logout():
     logout_user()
     session.clear()
     flash("You have been logged out", "success")
-    return redirect(url_for('landing'))
+    return redirect(url_for('home'))
 
 @app.route('/dashboard/game')
 def game_dashboard():
