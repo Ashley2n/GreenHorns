@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
     {% block content %}
+        <main class="min-h-screen h-full">
         <h1>Login Form</h1>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -33,4 +34,5 @@
         </form>
 
         <p>Don't have an Account <a href="{{ url_for('register') }}" class="underline text-blue-400 ">Register</a></p>
+        </main>
     {% endblock %}
