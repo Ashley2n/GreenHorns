@@ -57,7 +57,7 @@ def login():
                 if decrypted_password == password_input:
                     login_user(user_exist)
                     flash("You Have been Logged In", "success")
-                    return redirect(url_for("game_dashboard"))
+                    return redirect(url_for("home"))
             flash("Incorrect email or Password", "danger")
     return render_template('auth/login.html', form=form)
 
@@ -90,7 +90,7 @@ def register():
 
 
         flash("You have been registered", "success")
-        return redirect(url_for('game_dashboard'))
+        return redirect(url_for('home'))
     return render_template('auth/register.html', form=form)
 
 @app.route('/logout')
@@ -99,6 +99,11 @@ def logout():
     session.clear()
     flash("You have been logged out", "success")
     return redirect(url_for('home'))
+
+@app.route('/profile')
+@login_required
+def profile():
+    render_template('profile/index.html', user=get_user_by_id_ser(current_user.id))
 
 
 @app.route('/compare_images/<int:cuisine_id>', methods=['GET', 'POST'])
