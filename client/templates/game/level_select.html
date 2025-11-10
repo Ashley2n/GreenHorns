@@ -7,13 +7,10 @@
     #globeViz { width: 100vw; height: 100vh; }
   </style>
 
-    <main class="m-auto mt-5">
-        <h2 class="text-center"> Game DashBoard</h2>
-    </main>
-
 <body>
   <div id="globeViz"></div>
     <script src="https://unpkg.com/globe.gl"></script>
     <script src="https://unpkg.com/topojson@3"></script>
+    <script> const difficultyForCountries = {{ cuisine | tojson }} </script>
     <script src="{{ url_for('static', filename='js/world_map.js') }}"></script>
 {% endblock %}
