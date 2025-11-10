@@ -2,10 +2,21 @@ import pytest
 from sqlalchemy.orm import Session
 
 from helper_functions import encrypt_password
-from infrastructure.CRUD import *
+from infrastructure.CRUD import create_user_repo, get_by_id_repo, get_user_by_username_repo, get_user_by_email_repo, \
+    update_user_repo, delete_user_repo
 
 
 @pytest.fixture
+def sample_user(db_session: Session):
+    """Create a sample user for testing"""
+    user = create_user_repo(
+        db_session,
+        "sampleuser",
+        "samplepass",
+        "sample@example.com"
+    )
+    return user
+
 def test_create_user_repo(db_session:Session):
     """Test creating a new user"""
     user = create_user_repo(db_session, "testuser", "hashedpass123", "test@example.com")
@@ -16,7 +27,7 @@ def test_create_user_repo(db_session:Session):
     assert user.email == "test@example.com"
 
 
-def test_get_by_id_repo(self, db_session, sample_user):
+def test_get_by_id_repo(db_session, sample_user):
     """Test retrieving user by ID"""
     retrieved_user = get_by_id_repo(db_session, sample_user.id)
 
@@ -24,13 +35,13 @@ def test_get_by_id_repo(self, db_session, sample_user):
     assert retrieved_user.username == sample_user.username
 
 
-def test_get_by_id_repo_not_found(self, db_session):
+def test_get_by_id_repo_not_found(db_session):
     """Test retrieving non-existent user"""
     result = get_by_id_repo(db_session, 99999)
     assert result is None
 
 
-def test_get_user_by_username_repo(self, db_session, sample_user):
+def test_get_user_by_username_repo( db_session, sample_user):
     """Test retrieving user by username"""
     user = get_user_by_username_repo(db_session, sample_user.username)
 
@@ -60,7 +71,7 @@ def test_update_user_repo(self, db_session, sample_user):
     assert updated_user.email == "newemail@example.com"
 
 
-def test_delete_user_repo(self, db_session, sample_user):
+def test_delete_user_repo( db_session, sample_user):
     """Test deleting a user"""
     user_id = sample_user.id
     result = delete_user_repo(db_session, user_id)
@@ -69,7 +80,7 @@ def test_delete_user_repo(self, db_session, sample_user):
     assert get_by_id_repo(db_session, user_id) is None
 
 
-def test_delete_user_repo_not_found(self, db_session):
+def test_delete_user_repo_not_found(db_session):
     """Test deleting non-existent user"""
     # This might need error handling in your actual function
     result = delete_user_repo(db_session, 99999)
@@ -78,13 +89,3 @@ def test_delete_user_repo_not_found(self, db_session):
 
 
 # Fixtures for test data
-@pytest.fixture
-def sample_user(db_session):
-    """Create a sample user for testing"""
-    user = create_user_repo(
-        db_session,
-        "sampleuser",
-        "samplepass",
-        "sample@example.com"
-    )
-    return user
