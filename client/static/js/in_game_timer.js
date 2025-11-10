@@ -51,7 +51,7 @@ const updateDisplay = seconds => {
 const onTimeEnd = () => {
     isRunning = false;
     startPauseBtn.textContent = 'Start';
-    startPauseBtn.disabled = false;
+    startPauseBtn.disabled = true;
 
     const paragraph = document.getElementById("update-user")
     paragraph.innerHTML = `Please take a picture of the food you've created! :D`

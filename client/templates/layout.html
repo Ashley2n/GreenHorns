@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
 </head>
-<body class="relative min-h-screen ">
+<body class="relative">
     <header class="bg-blue-500 text-white px-4 py-3 mb-3">
     <nav class="flex items-center justify-between px-2 py-3">
         <div class="w-8 h-8 bg-red-300 rounded-full text-blue-400 font-bold text-center flex items-center justify-center">
             <a href="/" class="hover:cursor-pointer">BB</a>
         </div>
-        <ul class="flex justify-center gap-3 ">
-            <li class="hover:border-b hover:border-neutral-200 "><a href="/">Home</a></li>
-            <li class="hover:border-b hover:border-neutral-200 "><a href="/register">Register</a></li>
-            <li class="hover:bg-blue-400 focus:scale-1 px-4 py-2 "><a href="{{ url_for("logout") }}">Logout</a></li>
+        <ul class=" navSection flex justify-center items-center gap-3 ">
+            <li class=" text-sm px-2 "><a href="/">Home</a></li>
+            <li class= " text-sm px-2 "><a href="/avatar-create">Avatar</a></li>
+            <li class=" text-sm px-2 "><a href="/register">Register</a></li>
+            <li class="hover:bg-blue-400 focus:scale-1 px-4 py-2 rounded-md text-md "><a href="{{ url_for("logout") }}">Logout</a></li>
         </ul>
     </nav>
 </header>
@@ -23,7 +26,7 @@
 
 {% endblock %}
 
-<footer class="absolute bottom-0 w-full text-white px-4 py-3 bg-blue-500 flex items-center justify-between p-3">
+<footer class=" w-full text-white px-4 py-3 bg-blue-500 flex items-center justify-between p-3">
     <p>Copyright 2025 FlaskInheritance</p>
 
     <div>
