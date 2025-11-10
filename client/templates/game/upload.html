@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Dish</title>
+</head>
+
+{% extends 'layout.html' %}
+{% block content %}
+<main class=" min-h-screen screen-full w-full min-w-screen">
+    <h2>Analyze Your Dish</h2>
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_page', cuisine_id=1) }}">
+        {{ form.hidden_tag() }}  <!-- this inserts CSRF token -->
+        {{ form.image.label }} {{ form.image() }}
+        {{ form.submit() }}
+    </form>
+
+    {% if results %}
+    <h3>Analysis Results</h3>
+    <ul>
+        <li>Average Color: <span style="color: {{ results['average_color'] }}">{{ results['average_color'] }}</span></li>
+        <li>Brightness: {{ results['brightness'] }}</li>
+        <li>Overcooked %: {{ results['overcooked_percent'] }}%</li>
+    </ul>
+    {% endif %}
+
+    {% if similarity %}
+    <h3>Similarity with Reference Dish</h3>
+    <p>{{ similarity }}% similar</p>
+    {% endif %}
+</main>
+{% endblock %}
+</html>

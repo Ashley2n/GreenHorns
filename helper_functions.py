@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 from cryptography.fernet import Fernet
 
@@ -27,8 +27,6 @@ def decrypt_password(encrypted_password: bytes) -> str:
 
 
 fernet = Fernet(load_key())
-
-
 
 def get_json_data_recipe(recipe_index,returned_obj):
     json_file = open('APIs/all_recipes.json', "r")
@@ -60,3 +58,7 @@ def game_screen_data(index):
         "mealType" : get_json_data_recipe(index, "mealType")[0]
     }
 
+def get_recipe_image(recipe_index):
+    return {
+        'image_url' : get_json_data_recipe(recipe_index, "image"),
+    }
