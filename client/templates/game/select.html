@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Level Select for the Game</title>
-</head>
-<body>
-    <h2>Level </h2>
-</body>
-</html>
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="min-h-screen flex justify-center items-start p-1">
+  <div class="grid gap-10 p-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl justify-items-center">
+
+      {% for recipe in cuisine %}
+      <a href="{{ url_for('game_screen', id=recipe.id) }}"
+         class="w-full max-w-xl rounded-3xl p-8 text-center font-bold duration-300 transform hover:scale-105 w-full">
+
+        <h1 class="text-3xl font-bold mb-2">
+          {{ recipe.name }}
+        </h1>
+        <p class="text-sm italic mb-6">
+          Difficulty: {{ recipe.difficulty }}
+        </p>
+
+        <div class=" text-lg">
+          <p class="m-1">Prep Time: {{ recipe.prepTimeMinutes }} min</p>
+          <p class="m-1">Cook Time: {{ recipe.cookTimeMinutes }} min</p>
+          <p class="m-1">Servings: {{ recipe.servings }}</p>
+          <p class="m-1">Calories: {{ recipe.caloriesPerServing }}</p>
+        </div>
+      </a>
+      {% endfor %}
+  </div>
+
+</div>
+{% endblock %}
