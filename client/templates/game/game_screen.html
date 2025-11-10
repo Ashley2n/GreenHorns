@@ -36,19 +36,14 @@
             <div id="timer" class="text-4xl font-bold text-white bg-black/40 px-6 py-3 rounded-lg border border-orange-500">
                 0:30
             </div>
-            <button id="start-button" class="mt-3 bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-5 rounded-lg transition">
+            <button id="start-button" class="mt-3 bg-green-700 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg transition">
                 ▶ Start
             </button>
         </div>
 
-        <div class="flex flex-col items-center mb-8">
-            <label for="upload" class="cursor-pointer bg-gray-700 hover:bg-gray-600 text-white py-2 px-6 rounded-md border border-blue-500 transition">
-                Upload Image
-            </label>
-            <form method="post">
-                <input id="upload" type="file" onChange="handleImageUpload()" hidden>
-            </form>
-        </div>
+        <a class="flex flex-col items-center mb-8" href="{{ url_for('upload_page', cuisine_id=recipe.id) }} ">
+            Upload Image
+        </a>
 
         <div class="bg-black/40 p-4 rounded-lg border border-orange-500 text-center mb-6">
             <h1 id="instruction_num" class="text-blue-400 text-2xl m-2 underline">Step 1</h1>
