@@ -6,7 +6,7 @@
 
 {% extends 'layout.html' %}
 {% block content %}
-<main>
+<main class=" min-h-screen screen-full w-full min-w-screen">
     <h2>Analyze Your Dish</h2>
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_page', cuisine_id=1) }}">
         {{ form.hidden_tag() }}  <!-- this inserts CSRF token -->

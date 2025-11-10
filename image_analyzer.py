@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import requests
+
 
 def analyze_image(image_path):
     """Basic analysis of color and brightness"""
@@ -31,7 +33,18 @@ def analyze_image(image_path):
 def compare_images(img1_path, img2_path):
     """Compare two images using histogram similarity"""
     img1 = cv2.imread(img1_path)
-    img2 = cv2.imread(img2_path)
+    print("Image Url", img2_path['image_url'])
+
+    response = requests.get(img2_path['image_url'], stream=True)
+    if response.status_code != 200:
+        raise ValueError(f"Error: Could not fetch image from {img2_path['image_url']}")
+
+    image_bytes = np.asarray(bytearray(response.content), dtype=np.uint8)
+    img2 = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
+    if img2 is None:
+        raise ValueError("Error: Could not decode remote image.")
+
+    # img2 = cv2.imread(img2_path)
 
     # Convert to HSV for color-based comparison
     hsv1 = cv2.cvtColor(img1, cv2.COLOR_BGR2HSV)
