@@ -11,7 +11,7 @@ from client.forms.ImageUploadForm import ImageUploadForm
 from domain.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
-from helper_functions import decrypt_password, encrypt_password
+from helper_functions import decrypt_password, encrypt_password, get_recipe_image
 from image_analyzer import analyze_image, compare_images
 
 app = Flask(__name__, template_folder='client/templates')
@@ -89,12 +89,13 @@ def logout():
 
 
 @app.route('/compare_images/<int:cuisine_id>', methods=['GET', 'POST'])
-def upload_page(cusine_id):
+def upload_page(cuisine_id):
     form = ImageUploadForm()
     results = None
     similarity = None
 
     if form.validate_on_submit():
+        print("Hi welcome to comparing Images")
         file = form.image.data
         filename = secure_filename(file.filename)
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -102,14 +103,18 @@ def upload_page(cusine_id):
 
         # Example API call to get reference image
         # Getting Image from API
-
+        reference_path = get_recipe_image(cuisine_id)
 
 
         # Analyze and compare
         results = analyze_image(image_path)
         similarity = compare_images(image_path, reference_path)
 
-    return render_template('upload.html', form=form, results=results, similarity=similarity)
+        print("References: ", reference_path)
+        print("Results: ", results)
+        print("Similarity: ", similarity)
+
+    return render_template('game/upload.html', form=form, results=results, similarity=similarity)
 
 
 # @app.route('/analyze', methods=['POST'])
@@ -130,7 +135,7 @@ def upload_page(cusine_id):
 #
 # @app.route('/upload')
 # def upload():
-#     return render_template('game/upload.html')
+#     return render_template('game/uploadtest.html')
 # @app.route('/compare', methods=['POST'])
 # def compare():
 #     img1 = request.files['image1']

@@ -1,20 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Dish</title>
+</head>
 
 {% extends 'layout.html' %}
 {% block content %}
-<h2>Analyze Single Image</h2>
-    <form action="/analyze" method="post" enctype="multipart/form-data" class="flex bg-red-200">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
-            {{ form.hidden_tag() }}
-        <input type="file" name="image" required>
-        <button type="submit">Analyze</button>
+<main>
+    <h2>Analyze Your Dish</h2>
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_page', cuisine_id=1) }}">
+        {{ form.hidden_tag() }}  <!-- this inserts CSRF token -->
+        {{ form.image.label }} {{ form.image() }}
+        {{ form.submit() }}
     </form>
 
-    <h2>Compare Two Images</h2>
-    <form action="/compare" method="post" enctype="multipart/form-data" class="flex bg-blue-200">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" >
-            {{ form.hidden_tag() }}
-        <input type="file" name="image1" required>
-        <input type="file" name="image2" required>
-        <button type="submit">Compare</button>
-    </form>
+    {% if results %}
+    <h3>Analysis Results</h3>
+    <ul>
+        <li>Average Color: <span style="color: {{ results['average_color'] }}">{{ results['average_color'] }}</span></li>
+        <li>Brightness: {{ results['brightness'] }}</li>
+        <li>Overcooked %: {{ results['overcooked_percent'] }}%</li>
+    </ul>
+    {% endif %}
+
+    {% if similarity %}
+    <h3>Similarity with Reference Dish</h3>
+    <p>{{ similarity }}% similar</p>
+    {% endif %}
+</main>
 {% endblock %}
+</html>
