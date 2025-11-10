@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from APIs.api_recipes_call import load_more_recipes
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser
 from client.forms.ImageUploadForm import ImageUploadForm
-from domain.DTOs import CreateUserDto
+from Entities.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
 from helper_functions import decrypt_password, encrypt_password, get_recipe_image

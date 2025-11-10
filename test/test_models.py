@@ -41,7 +41,7 @@ def test_get_by_id_repo_not_found(db_session):
     assert result is None
 
 
-def test_get_user_by_username_repo( db_session, sample_user):
+def test_get_user_by_username_repo(db_session, sample_user):
     """Test retrieving user by username"""
     user = get_user_by_username_repo(db_session, sample_user.username)
 
@@ -49,7 +49,7 @@ def test_get_user_by_username_repo( db_session, sample_user):
     assert user.id == sample_user.id
 
 
-def test_get_user_by_email_repo(self, db_session, sample_user):
+def test_get_user_by_email_repo(db_session, sample_user):
     """Test retrieving user by email"""
     user = get_user_by_email_repo(db_session, sample_user.email)
 
@@ -57,7 +57,7 @@ def test_get_user_by_email_repo(self, db_session, sample_user):
     assert user.id == sample_user.id
 
 
-def test_update_user_repo(self, db_session, sample_user):
+def test_update_user_repo(db_session, sample_user):
     """Test updating user information"""
     updated_user = update_user_repo(
         db_session,
@@ -71,7 +71,7 @@ def test_update_user_repo(self, db_session, sample_user):
     assert updated_user.email == "newemail@example.com"
 
 
-def test_delete_user_repo( db_session, sample_user):
+def test_delete_user_repo(db_session, sample_user):
     """Test deleting a user"""
     user_id = sample_user.id
     result = delete_user_repo(db_session, user_id)
