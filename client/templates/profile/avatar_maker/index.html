@@ -404,25 +404,6 @@
     run().catch(handleError);
   </script>
 
-{#  <script type="text/javascript" defer>#}
-{#    const saveButton = document.getElementById('saveAvatar');#}
-{#    const canvas = document.querySelector('.sc-canvas'); // Ensure the correct canvas is selected#}
-{##}
-{#    saveButton.addEventListener('click', () => {#}
-{#        console.log("Entering the Saving Picture Function");#}
-{#        const imageData = canvas.toDataURL('image/png');#}
-{#        fetch('/save-avatar', {#}
-{#            method: 'POST',#}
-{#            headers: { 'Content-Type': 'application/json' },#}
-{#            body: JSON.stringify({ image: imageData })#}
-{#        })#}
-{#        .then(res => res.json())#}
-{#        .then(data => {#}
-{#            alert('Avatar saved! URL: ' + data.url);#}
-{#            alert('Avatar saved! You can view it on your profile.');#}
-{#        });#}
-{#    });#}
-{#  </script>#}
 
 </body>
 <!--     !  ႔ ႔    You found me!
