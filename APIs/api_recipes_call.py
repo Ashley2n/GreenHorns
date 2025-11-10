@@ -36,21 +36,18 @@ def get_all_recipes():
 def load_more_recipes(region):
     region = str(region)
     list_of_recipes = []
-    with open('all_recipes.json', 'r') as file:
-        data = json.load(file)
-        for i in data['recipes']:
-            if i['cuisine'] == region:
-                list_of_recipes.append(i)
+    json_file = open('APIs/all_recipes.json', 'r')
+    full_recipe_dict = json.load(json_file)
+    for i in full_recipe_dict['recipes']:
+        if i['cuisine'] == region:
+            list_of_recipes.append(i)
 
     print(list_of_recipes)
-    file.close()
-
+    json_file.close()
 
     return list_of_recipes
 
 # will return the attributes associated with the region/cuisine.  For the list of choices to choose from.
-load_more_recipes('Asian')
-
 # "id":5,
 # "name":"Mango Salsa Chicken",
 # "ingredients":["Chicken thighs","Mango, diced","Red onion, finely chopped","Cilantro, chopped","Lime juice","Jalapeño, minced","Salt and pepper to taste","Cooked rice for serving"],
