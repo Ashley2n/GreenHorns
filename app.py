@@ -13,8 +13,9 @@ from application.services import create_user_ser, get_user_by_username_ser, get_
 from domain.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
-from helper_functions import decrypt_password, encrypt_password
+from helper_functions import decrypt_password, encrypt_password, get_json_data_recipe, game_screen_data
 
+app = Flask(__name__, template_folder='client/templates')
 
 UPLOAD_FOLDER = 'client/static/avatars'
 
@@ -135,6 +136,12 @@ def save_avatar():
 @login_required
 def game_dashboard():
     return render_template('game/dashboard.html')
+
+@app.route('/recipe/data/<int:recipe_id>')
+def recipe_data(recipe_id:int):
+    data = game_screen_data(recipe_id)
+
+    return render_template('game/game.html', data=data)
 
 @app.route('/game/game_screen')
 @login_required
