@@ -5,6 +5,7 @@ import os
 
 from werkzeug.utils import secure_filename
 
+from APIs.api_recipes_call import load_more_recipes
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser
 from client.forms.ImageUploadForm import ImageUploadForm
 from domain.DTOs import CreateUserDto
@@ -43,7 +44,7 @@ def login():
                 if decrypted_password == password_input:
                     login_user(user_exist)
                     flash("You Have been Logged In", "success")
-                    return render_template(url_for('game_dashboard'))
+                    return redirect(url_for("game_dashboard"))
             flash("Incorrect email or Password", "danger")
     return render_template('auth/login.html', form=form)
 
@@ -84,7 +85,7 @@ def logout():
     logout_user()
     session.clear()
     flash("You have been logged out", "success")
-    return redirect(url_for('landing'))
+    return redirect(url_for('home'))
 
 
 @app.route('/compare_images/<int:cuisine_id>', methods=['GET', 'POST'])
@@ -149,12 +150,27 @@ def upload_page(cusine_id):
 def game_dashboard():
     return render_template('game/dashboard.html')
 
+@app.route('/game/game_screen')
+def game_screen():
+    return render_template('game/game_screen.html')
+
+@app.route('/game/level_select')
+def level_select():
+    return render_template('game/level_select.html')
+
+@app.route('/game/campaign/<cuisine>')
+def campaign(cuisine):
+    get_cuisines = load_more_recipes(cuisine)
+
+    print(cuisine)
+    return render_template('game/campaign.html', cuisine=get_cuisines)
+
 @login_manager.user_loader
 def load_user(user_id):
     return get_user_by_id_ser(user_id)
 
+
 if __name__ == "__main__":
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     app.run(debug=True)
 
 # hello :D
