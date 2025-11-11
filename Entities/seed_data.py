@@ -1,4 +1,4 @@
-from domain.models import Campaign
+from Entities.models import Campaign
 
 def campaigns_hc(db):
     campaign1 = Campaign(

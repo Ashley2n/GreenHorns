@@ -1,6 +1,6 @@
-from domain.DTOs import CreateUserDto, UpdateUserDto
+from Entities.DTOs import CreateUserDto, UpdateUserDto
 from infrastructure.CRUD import *
-from domain.models import db_session
+from Entities.models import db_session
 
 def create_user_ser(user_dto: CreateUserDto):
     return create_user_repo(db_session, user_dto.username, user_dto.password, user_dto.email)
