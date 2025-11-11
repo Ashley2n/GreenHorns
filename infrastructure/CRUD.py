@@ -28,6 +28,20 @@ def update_user_repo(session, username, hashed_password, email):
         session.rollback()
     return user
 
+def update_user_xp_repo(session, user_id, xp_gain):
+    user = session.query(User).filter_by(id=user_id).first()
+
+    # Ensure xp_gain is a number, not a tuple
+    if isinstance(xp_gain, (tuple, list)):
+        xp_gain = xp_gain[0]  # Take first element if it's a tuple/list
+
+    # Convert to integer to be safe
+    xp_gain = int(xp_gain)
+
+    user.xp +=  xp_gain
+    session.commit()
+    return user
+
 def delete_user_repo(session, user_id):
     user = session.query(User).where(User.id == user_id).first()
     session.delete(user)
@@ -37,3 +51,10 @@ def delete_user_repo(session, user_id):
         return False
     else:
         return True
+
+def save_user_avatar_repo(session, user_id, path):
+    user = session.query(User).where(User.id == user_id).first()
+    user.image_path = path
+    session.commit()
+
+    return user

@@ -1,0 +1,39 @@
+/*colors can be changed*/
+body{
+    text-align: center;
+    background-image: linear-gradient(to bottom right, #75a4fc, #1d51b3);
+    color: lightgray;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+#cook-quest{
+    text-shadow: 4px 4px white;
+}
+
+body a{
+    font-size: x-large;
+    justify-self: center;
+    color: white;
+    background-color: #fdae4f;
+    border: #e44b19 4px solid;
+    border-radius: 20px;
+    box-shadow: 5px 5px #003eb1;
+}
+body a:hover{
+    background-color:#e44b19 ;
+    border-color: #fdae4f;
+    text-decoration: underline;
+}
+
+form > button{
+    padding: 10px 5px;
+    background-color: #003eb1;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+
+
+/* can add more styling or leave it as is */
+/* could add audio when hovered/clicked on the button */

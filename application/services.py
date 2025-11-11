@@ -21,5 +21,19 @@ def update_user_ser (updated_user_dto: UpdateUserDto):
         hashed_password=updated_user_dto.password,
         email=updated_user_dto.email
     )
+
 def delete_user_ser(user_id):
     return delete_user_repo(db_session, user_id=user_id)
+
+def save_user_avatar_ser(user_id, path):
+    return save_user_avatar_repo(
+        session=db_session,
+        user_id=user_id,
+        path=path)
+
+def update_user_xp_ser(user_id, xp_gain):
+    return update_user_xp_repo(
+        session=db_session,
+        user_id=user_id,
+        xp_gain=xp_gain
+    )

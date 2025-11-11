@@ -1,22 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ cuisine }} Recipes</title>
-</head>
-<body>
-    {% for recipe in cuisine %}
-    <h1>Recipe: {{ recipe.name}}</h1>
-    <p>Ingredients: {{ recipe.ingredients }}</p>
-    <p>Prep Time: {{ recipe.prepTimeMinutes }}</p>
-    <p>Cook Time: {{ recipe.cookTimeMinutes }}</p>
-    <p>Servings: {{ recipe.servings }}</p>
-    <p>Difficulty: {{ recipe.difficulty }}</p>
-    <p>Calories Per Serving: {{ recipe.caloriesPerServing }}</p>
-    {% endfor %}
+{% extends 'layout.html' %}
 
-    <!-- Example placeholder area for your recipes -->
+{% block content %}
+<div class="min-h-screen flex flex-col justify-center items-center">
 
-    <a href="/">Back to Globe</a>
-</body>
-</html>
+  <div class="max-w-3xl w-full bg-gray-800/60 rounded-2xl border border-orange-500 p-8 shadow-lg text-center">
+     <h1 class="text-4xl mb-6">Select Difficulty</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 m-4">
+
+      <a class="flex flex-col justify-between p-6 w-full font-bold duration-300 hover:scale-105" href="{{ url_for('campaign_difficulty', difficulty='Easy') }}">
+          <div>
+        <h2 class="text-white">Easy</h2>
+        <p class="text-sm">A calm kitchen to learn the ropes.</p>
+              </div>
+      </a>
+
+      <a class="flex flex-col justify-between p-6 w-full font-bold duration-300 hover:scale-105" href="{{ url_for('campaign_difficulty', difficulty='Medium') }}">
+          <div>
+        <h2 class="text-white">Medium</h2>
+        <p class="text-sm">The heat is rising.</p>
+          </div>
+      </a>
+
+        <!--
+      <a class="flex flex-col justify-between p-6 w-full font-bold duration-300 hover:scale-105" href="{{ url_for('campaign_difficulty', difficulty='Hard') }}">
+          <div>
+        <h2 class="text-white">Hard</h2>
+        <p class="text-sm">Only for master chefs.</p>
+          </div>
+      </a>
+        -->
+
+      <a class="flex flex-col justify-between p-6 w-full font-bold duration-300 hover:scale-105 md:col-span-2" href="{{ url_for('campaign_difficulty', difficulty='all') }}">
+          <div>
+        <h2 class="text-white">All</h2>
+        <p class="text-sm">Face every recipe head-on.</p>
+          </div>
+      </a>
+
+    </div>
+
+    <a class="p-2" href="{{ url_for('home') }}">
+      ← Back
+    </a>
+
+  </div>
+</div>
+{% endblock %}

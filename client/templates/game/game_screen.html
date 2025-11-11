@@ -1,16 +1,89 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center p-6">
 
-    <h1 id="update-user">Timer</h1>
-    <h1 id="timer">0:30</h1>
-    <button id="start-button">Start</button>
+    <div class="max-w-3xl w-full rounded-2xl border border-orange-500 border-2 p-8 shadow-lg bg-orange-400">
+        <h1 class="text-3xl font-bold text-center mb-6 text-orange-800 underline">{{ recipe.name }}</h1>
 
-    <input id="upload" type="file" onChange="handleImageUpload()">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center text-sm mb-8">
+            <div>
+                <h2 class="text-orange-800 text-xl">Prep Time</h2>
+                <p class="text-lg text-white" id="prep_time">{{ recipe.prepTimeMinutes }}</p>
+            </div>
+            <div>
+                <h2 class="text-orange-800 text-xl">Cook Time</h2>
+                <p class="text-lg text-white" id="cook_time">{{ recipe.cookTimeMinutes }}</p>
+            </div>
+            <div>
+                <h2 class="text-orange-800 text-xl">Servings</h2>
+                <p class="text-lg text-white">{{ recipe.servings }}</p>
+            </div>
+            <div class="col-span-2 md:col-span-3">
+                <h2 class="text-orange-800 text-xl">Ingredients</h2>
+                {% for ingredient in recipe.ingredients %}
+                <p class="text-white text-lg">{{ ingredient }}</p>
+                {% endfor %}
+            </div>
+            <div class="col-span-2 md:col-span-3">
+                <h2 class="text-orange-800 text-xl">Calories per Serving</h2>
+                <p class="text-lg text-white">{{ recipe.caloriesPerServing }}</p>
+            </div>
+        </div>
 
-    <img id="display-image" src="" />
+        <div class="flex flex-col items-center mb-8">
+            <h2 class="text-lg font-bold mb-2 text-orange-800">Timer</h2>
+            <div id="timer" class="text-4xl font-bold text-white bg-black/40 px-6 py-3 rounded-lg border border-orange-500">
+                0:30
+            </div>
+            <button id="start-button" class="mt-3 bg-green-700 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg transition">
+                ▶ Start
+            </button>
+        </div>
 
-    <script src="{{ url_for('static', filename="js/in_game_timer.js") }}"></script>
+        <a class="flex flex-col items-center mb-8" href="{{ url_for('upload_page', cuisine_id=recipe.id) }} ">
+            Upload Image
+        </a>
 
+        <div class="bg-black/40 p-4 rounded-lg border border-orange-500 text-center mb-6">
+            <h1 id="instruction_num" class="text-blue-400 text-2xl m-2 underline">Step 1</h1>
+            <p id="instructions" class="text-lg text-white">{{ recipe.instructions[0] }}</p>
+        </div>
+
+        <div class="flex justify-between">
+            <button id="prevBtn" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-5 rounded-md disabled:opacity-40 transition">
+                ⬅ Previous
+            </button>
+            <button id="nextBtn" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-5 rounded-md transition">
+                Next ➡
+            </button>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename="js/in_game_timer.js") }}"></script>
+<script>
+    const instructions = {{ recipe.instructions | tojson }};
+    const next_button = document.getElementById("nextBtn");
+    const prev_button = document.getElementById("prevBtn");
+    const instruction_list = document.getElementById("instructions");
+    const instruction_step = document.getElementById("instruction_num")
+    let instruction_num = 0;
+
+    next_button.addEventListener('click', () => {
+        if (instruction_num < instructions.length - 1) {
+            instruction_num++;
+            instruction_list.textContent = instructions[instruction_num];
+            instruction_step.textContent = "Step " + (instruction_num + 1)
+        }
+    });
+
+    prev_button.addEventListener('click', () => {
+        if (instruction_num > 0) {
+            instruction_num--;
+            instruction_list.textContent = instructions[instruction_num];
+            instruction_step.textContent = "Step " + (instruction_num + 1)
+        }
+    });
+</script>
 
 {% endblock %}
