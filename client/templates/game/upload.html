@@ -85,7 +85,7 @@
 {% block content %}
 <main class=" min-h-screen screen-full w-full min-w-screen space-x-5 py-6 mb-4">
     <h2>Analyze Your Dish</h2>
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_page', cuisine_id=1) }}"
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_page', cuisine_id=cuisine_id) }}"
     class="px-6 py-12 bg-orange-400 border-3 border-orange-600 rounded-lg flex flex-col items-center justify-between">
         {{ form.hidden_tag() }}  <!-- this inserts CSRF token -->
         {{ form.image.label }}
