@@ -2,7 +2,7 @@
 body{
     text-align: center;
     background-image: linear-gradient(to bottom right, #75a4fc, #1d51b3);
-    color: #df410c;
+    color: lightgray;
     text-transform: uppercase;
     font-weight: bold;
 }
@@ -24,6 +24,13 @@ body a:hover{
     background-color:#e44b19 ;
     border-color: #fdae4f;
     text-decoration: underline;
+}
+
+form > button{
+    padding: 10px 5px;
+    background-color: #003eb1;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
 

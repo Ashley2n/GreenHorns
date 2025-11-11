@@ -59,20 +59,21 @@
 
     </style>
 
-    <button>HOME</button>  <!-- Add a function that sends you back to the title screen page -->
 
 </head>
 <body>
     <h1>Profile</h1>
 
+    <button><a href="{{ url_for('home') }}">HOME</a></button>  <!-- Add a function that sends you back to the title screen page -->
+
     <div class="circle"></div> <!-- The circle will be where the user can upload
                                 their avatar inside, so make sure to add something
                                 that lets the user do that -->
 
-    <label>Username: </label> <!--Make it so that the username that the user created,
+    <label>Username: {{ user.username }} </label> <!--Make it so that the username that the user created,
                                 appears in front of the username label-->
 
-    <label>Level: </label> <!--Shows the level the user is at-->
+    <label>Level: {{ user.level }} </label> <!--Shows the level the user is at-->
 
     <p>Change OR Add avatar inside the circle</p>
 

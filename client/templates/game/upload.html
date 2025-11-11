@@ -6,17 +6,34 @@
 
 {% extends 'layout.html' %}
 {% block content %}
-<main class=" min-h-screen screen-full w-full min-w-screen">
+<main class=" min-h-screen screen-full w-full min-w-screen space-x-5 py-6 mb-4">
     <h2>Analyze Your Dish</h2>
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_page', cuisine_id=1) }}">
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_page', cuisine_id=1) }}"
+    class="px-6 py-12 bg-orange-400 border-3 border-orange-600 rounded-lg flex flex-col items-center justify-between">
         {{ form.hidden_tag() }}  <!-- this inserts CSRF token -->
-        {{ form.image.label }} {{ form.image() }}
+        {{ form.image.label }}
+        {{ form.image() }}
         {{ form.submit() }}
     </form>
 
+    <section class="flex flex-row gap-4 items-center justify-center mb-4">
+
+        {% if user_image != null %}
+            <p>Your Cooking</p>
+            <img src="{{ user_image }}" alt="Users Image" width="200" height="200"/>
+
+        {% endif %}
+
+        {% if recipes_image != null %}
+            <p>Recipes Image</p>
+            <img src="{{ recipes_image }}" alt="Users Image" width="200" height="200"/>
+        {% endif %}
+    </section>
+
+
     {% if results %}
     <h3>Analysis Results</h3>
-    <ul>
+    <ul class="flex flex-col md:flex-row-reverse gap-4 px-12 py-4 bg-orange-400">
         <li>Average Color: <span style="color: {{ results['average_color'] }}">{{ results['average_color'] }}</span></li>
         <li>Brightness: {{ results['brightness'] }}</li>
         <li>Overcooked %: {{ results['overcooked_percent'] }}%</li>
@@ -25,8 +42,14 @@
 
     {% if similarity %}
     <h3>Similarity with Reference Dish</h3>
-    <p>{{ similarity }}% similar</p>
+        <div class="flex flex-col md:flex-row-reverse gap-4 px-12 py-4 bg-orange-400">
+        <p>Similarity: {{ similarity.similarity }}% </p>
+        <p>Status: {{ similarity.status }} </p>
+{#        <p>Shape 1: {{ similarity.details.img1_shape }} </p>#}
+{#        <p>Shape 2: {{ similarity.details.img2_shape }} </p>#}
+        </div>
     {% endif %}
+    <a href="/game/campaign" class="py-2 mt-6">Find Another</a>
 </main>
 {% endblock %}
 </html>
