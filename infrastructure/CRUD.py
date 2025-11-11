@@ -1,4 +1,4 @@
-from domain.models import *
+from Entities.models import *
 
 def create_user_repo(session, username, hashed_password, email=''):
     user = User(username=username, password_hash=hashed_password, email=email)
