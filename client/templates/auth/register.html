@@ -7,6 +7,7 @@
 {% extends 'layout.html' %}
 
     {% block content %}
+        <main class="min-h-screen h-full">
 
         <h1>Register Form</h1>
 
@@ -38,5 +39,6 @@
         </form>
 
         <p >Already have an account <a href="{{ url_for('login') }}" class="underline text-blue-400">Login</a></p>
+        </main>
 {% endblock %}
 </html>

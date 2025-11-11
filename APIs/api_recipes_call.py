@@ -12,9 +12,9 @@ def get_preload_recipes():
 
     response = urllib.request.urlopen(url)
     result = json.loads(response.read())
-    print(result)
+    #print(result)
 
-    with open('10_recipes.json', 'a') as file:
+    with open('10_recipes.json', 'w') as file:
         json.dump(recipe_data, file)
         file.close()
         return result
@@ -26,31 +26,75 @@ def get_all_recipes():
 
     response = urllib.request.urlopen(url)
     result = json.loads(response.read())
-    print(result)
+    #print(result)
 
-    with open('all_recipes.json', 'a') as file:
+    with open('all_recipes.json', 'w') as file:
         json.dump(recipe_data, file)
         file.close()
         return result
 
-def load_more_recipes(region):
+def load_more_recipes_with_difficulty(difficulty, region):
+    difficulty = str(difficulty)
     region = str(region)
     list_of_recipes = []
-    with open('all_recipes.json', 'r') as file:
-        data = json.load(file)
-        for i in data['recipes']:
+    json_file = open('APIs/all_recipes.json', 'r')
+    full_recipe_dict = json.load(json_file)
+    for i in full_recipe_dict['recipes']:
+        if i['difficulty'] == difficulty:
             if i['cuisine'] == region:
                 list_of_recipes.append(i)
 
-    print(list_of_recipes)
-    file.close()
-
+    #print(list_of_recipes)
+    json_file.close()
 
     return list_of_recipes
 
-# will return the attributes associated with the region/cuisine.  For the list of choices to choose from.
-load_more_recipes('Asian')
+def load_more_recipes(region):
+    region = str(region)
+    list_of_recipes = []
+    json_file = open('APIs/all_recipes.json', 'r')
+    full_recipe_dict = json.load(json_file)
+    for i in full_recipe_dict['recipes']:
+        if i['cuisine'] == region:
+            list_of_recipes.append(i)
 
+    #print(list_of_recipes)
+    json_file.close()
+    return list_of_recipes
+
+def load_difficulties(difficulty):
+    difficulty = str(difficulty)
+    list_of_recipes = []
+    json_file = open('APIs/all_recipes.json', 'r')
+    full_recipe_dict = json.load(json_file)
+    for i in full_recipe_dict['recipes']:
+        if i['difficulty'] == difficulty:
+            list_of_recipes.append(i)
+
+    #print(list_of_recipes)
+    json_file.close()
+    return list_of_recipes
+
+
+def load_specific_recipe(recipe_id):
+    recipe_id = int(recipe_id)
+    json_file = open('APIs/all_recipes.json', 'r')
+    full_recipe_dict = json.load(json_file)
+    for recipe in full_recipe_dict['recipes']:
+        if recipe['id'] == recipe_id:
+            found_recipe = recipe
+            break
+
+    #print(found_recipe)
+    json_file.close()
+
+    return found_recipe
+
+#load_more_recipes('Asian')
+#load_specific_recipe(4)
+#load_difficulties("Easy")
+
+# will return the attributes associated with the region/cuisine.  For the list of choices to choose from.
 # "id":5,
 # "name":"Mango Salsa Chicken",
 # "ingredients":["Chicken thighs","Mango, diced","Red onion, finely chopped","Cilantro, chopped","Lime juice","Jalapeño, minced","Salt and pepper to taste","Cooked rice for serving"],

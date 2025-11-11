@@ -1,6 +1,6 @@
 from domain.models import *
 
-def create_user_repo(session, username, hashed_password, email):
+def create_user_repo(session, username, hashed_password, email=''):
     user = User(username=username, password_hash=hashed_password, email=email)
     session.add(user)
     session.commit()
@@ -37,3 +37,10 @@ def delete_user_repo(session, user_id):
         return False
     else:
         return True
+
+def save_user_avatar_repo(session, user_id, path):
+    user = session.query(User).where(User.id == user_id).first()
+    user.image_path = path
+    session.commit()
+
+    return user

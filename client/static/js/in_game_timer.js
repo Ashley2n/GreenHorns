@@ -10,20 +10,21 @@ function getTime(prep_time, cook_time){
 
 function handleImageUpload()
 {
+        const image = document.getElementById("upload").files[0];
 
-const image = document.getElementById("upload").files[0];
+            const reader = new FileReader();
 
-    const reader = new FileReader();
+            reader.onload = function(e) {
+              document.getElementById("display-image").src = e.target.result;
+            }
 
-    reader.onload = function(e) {
-      document.getElementById("display-image").src = e.target.result;
-    }
-
-    reader.readAsDataURL(image);
-
+            reader.readAsDataURL(image);
 }
 
-let initialTime = getTime(.1, .1)
+const prep_time_recipe = document.getElementById("prep_time").innerText
+const cook_time_recipe = document.getElementById("cook_time").innerText
+
+let initialTime = getTime(prep_time_recipe, cook_time_recipe)
 
 const TIMER_INTERVAL_MS = 1000;
 let countdownInterval;
@@ -36,9 +37,10 @@ const timeInput = document.getElementById("time-input");
 
 
 const formatTime = seconds => {
+    const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return [mins, secs].map(unit => String(unit).padStart(2, '0')).join(':');
+    return [hrs, mins, secs].map(unit => String(unit).padStart(2, '0')).join(':');
 };
 
 const updateDisplay = seconds => {
@@ -51,10 +53,10 @@ const updateDisplay = seconds => {
 const onTimeEnd = () => {
     isRunning = false;
     startPauseBtn.textContent = 'Start';
-    startPauseBtn.disabled = false;
+    startPauseBtn.disabled = true;
 
     const paragraph = document.getElementById("update-user")
-    paragraph.innerHTML = `Please take a picture of the food you've created! :D`
+    paragraph.innerHTML = `Please take a picture of the food you've created!`
 };
 
 const startCountdown = () => {
