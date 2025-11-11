@@ -5,7 +5,7 @@
   <div class="grid gap-10 p-10 w-full max-w-7xl justify-items-center">
 
       {% for recipe in cuisine %}
-      <a href="{{ url_for('game_screen', id=recipe.id) }}"
+      <a href="{{ url_for('game_screen', recipe_id=recipe.id) }}"
          class="w-full max-w-3xl max-h-3xl rounded-3xl p-8 text-center font-bold duration-300 transform hover:scale-105 w-full">
 
         <h1 class="text-3xl font-bold mb-2">

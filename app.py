@@ -114,7 +114,7 @@ def logout():
 @app.route('/profile')
 @login_required
 def profile():
-    render_template('profile/index.html', user=get_user_by_id_ser(current_user.id))
+    return render_template('profile/index.html', user=get_user_by_id_ser(current_user.id))
 
 
 @app.route('/compare_images/<int:cuisine_id>', methods=['GET', 'POST'])
