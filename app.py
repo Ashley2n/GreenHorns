@@ -17,7 +17,7 @@ from application.json.xp_calc import calculate_xp
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser, update_user_xp_ser
 from client.forms.ImageUploadForm import ImageUploadForm
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser, save_user_avatar_ser
-from domain.DTOs import CreateUserDto
+from Entities.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
 from helper_functions import decrypt_password, encrypt_password, get_recipe_image, calculate_level
