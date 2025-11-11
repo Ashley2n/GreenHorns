@@ -1,7 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Upload Dish</title>
+    <style type="text/css">
+
+
+        .xp-wrapper {
+    width: 350px;
+    margin: 20px;
+}
+
+.xp-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.xp-container {
+    background-color: #2d3748;
+    border-radius: 10px;
+    padding: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.xp-bar {
+    height: 25px;
+    background: linear-gradient(90deg, #f093fb, #f5576c);
+    border-radius: 8px;
+    width: 0; /* Start at 0 */
+    animation: fillBar 2s ease-out forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.xp-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,0.3) 50%,
+        transparent 100%);
+    animation: shine 2s ease-in-out infinite;
+}
+
+@keyframes fillBar {
+    from { width: 0%; }
+    to { width: 65%; }
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.xp-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+
+        h1 {
+            text-align: center;
+            font-family: Verdana, sans-serif;
+            font-size: 50px;
+            color: white;
+            background-color: orange;
+            -webkit-text-stroke-width: 2px;
+            -webkit-text-stroke-color: black;
+        }
+    </style>
 </head>
 
 {% extends 'layout.html' %}
@@ -43,11 +120,56 @@
     {% if similarity %}
     <h3>Similarity with Reference Dish</h3>
         <div class="flex flex-col md:flex-row-reverse gap-4 px-12 py-4 bg-orange-400">
-        <p>Similarity: {{ similarity.similarity }}% </p>
-        <p>Status: {{ similarity.status }} </p>
-{#        <p>Shape 1: {{ similarity.details.img1_shape }} </p>#}
-{#        <p>Shape 2: {{ similarity.details.img2_shape }} </p>#}
+            <p>Similarity: {{ similarity.similarity }}% </p>
+            <p>Status: {{ similarity.status }} </p>
+    {#        <p>Shape 1: {{ similarity.details.img1_shape }} </p>#}
+    {#        <p>Shape 2: {{ similarity.details.img2_shape }} </p>#}
         </div>
+    {% endif %}
+
+    {% if xp_gain != None and xp_info != None %}
+
+        <div class="xp-wrapper">
+            <div class="xp-header">
+                <span>XP-GAIN: {{ xp_gain[0] }}</span>
+                <span>Level {{ xp_info.level }}</span>
+                <span>{{ xp_info.progress }}% Complete</span>
+            </div>
+            <div class="xp-container">
+                <div class="xp-bar" style="width: {{ xp_info.progress }}%">
+                    <span class="xp-text">{{ xp_info.current_xp }}/{{ xp_info.xp_needed }} XP</span>
+                </div>
+            </div>
+        </div>
+
+        <script defer>
+// Example usage:
+const progressData = {
+    level: {{ xp_info.level }},
+    current_xp: {{ xp_info.current_xp }},
+    xp_needed: {{ xp_info.xp_needed }},
+    progress: {{ xp_info.progress }}
+};
+
+    function updateXPBar(currentXP, maxXP, level) {
+    const percentage = (currentXP / maxXP) * 100;
+
+    // Update the bar width
+    document.querySelector('.xp-bar').style.width = percentage + '%';
+
+    // Update the text
+    document.querySelector('.xp-text').textContent =
+        `${currentXP}/${maxXP} XP`;
+
+    // Update level if needed
+    document.querySelector('.level-badge').textContent = `Lvl ${level}`;
+}
+
+
+
+// Now use your existing function
+updateXPBar(progressData.current_xp, progressData.xp_needed, progressData.level);
+</script>
     {% endif %}
     <a href="/game/campaign" class="py-2 mt-6">Find Another</a>
 </main>

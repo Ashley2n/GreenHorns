@@ -1,5 +1,6 @@
 import base64
 import os
+import random
 
 import cv2
 import numpy as np
@@ -12,17 +13,16 @@ from werkzeug.utils import secure_filename
 from APIs.api_recipes_call import load_more_recipes_with_difficulty, load_difficulties, get_all_recipes, \
     load_more_recipes, load_specific_recipe
 from APIs.api_recipes_call import load_more_recipes
-from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser
+from application.json.xp_calc import calculate_xp
+from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser, update_user_xp_ser
 from client.forms.ImageUploadForm import ImageUploadForm
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser, save_user_avatar_ser
 from domain.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
-from helper_functions import decrypt_password, encrypt_password, get_recipe_image
+from helper_functions import decrypt_password, encrypt_password, get_recipe_image, calculate_level
 from image_analyzer import analyze_image, compare_images, buffer_file
 from helper_functions import decrypt_password, encrypt_password, get_json_data_recipe, game_screen_data
-
-
 
 app = Flask(__name__, template_folder='client/templates', static_folder='client/static')
 
@@ -114,7 +114,11 @@ def logout():
 @app.route('/profile')
 @login_required
 def profile():
-    return render_template('profile/index.html', user=get_user_by_id_ser(current_user.id))
+    calculated_user_xp = calculate_level(total_xp=current_user.xp)
+    return render_template(
+        'profile/index.html',
+                            user=get_user_by_id_ser(current_user.id),
+                            xp_info=calculated_user_xp)
 
 
 @app.route('/compare_images/<int:cuisine_id>', methods=['GET', 'POST'])
@@ -122,6 +126,8 @@ def profile():
 def upload_page(cuisine_id):
     form = ImageUploadForm()
     file = None
+    xp_gain = None
+    xp_info = None
     results = None
     similarity = None
 
@@ -145,9 +151,33 @@ def upload_page(cuisine_id):
             file_bytes_compare = buffer_file(file)
             similarity = compare_images(img1=file_bytes_compare, img2_dict=reference_path)
 
+            print(similarity['similarity'])
+
+            # Calculate XP
+            xp_value = calculate_xp(recipe_index=cuisine_id,
+                                    user_time_minutes=random.randint(10, 100),
+                                    image_compare_score=similarity['similarity'])
+            xp_gain = xp_value
+
+            updated_user_xp = update_user_xp_ser(current_user.id, xp_value)
+
+            calculated_user_xp = calculate_level(total_xp=updated_user_xp.xp)
+            xp_info = calculated_user_xp
+
             print("References: ", reference_path)
             print("Results: ", results)
             print("Similarity: ", similarity)
+
+            return render_template(
+                'game/upload.html',
+                form=form,
+                results=results,
+                similarity=similarity,
+                cuisine_id=cuisine_id,
+                recipes_image=get_recipe_image(cuisine_id)['image_url'],
+                user_image = file.filename,
+                xp_gain = xp_gain,
+                xp_info = xp_info)
 
         except Exception as e:
             print(f"Error processing image: {str(e)}")
@@ -159,7 +189,9 @@ def upload_page(cuisine_id):
                            results=results,
                            similarity=similarity,
                            cuisine_id=cuisine_id,
-                            recipes_image = get_recipe_image(cuisine_id)['image_url'])
+                            recipes_image = get_recipe_image(cuisine_id)['image_url'],
+                            xp_gain = xp_gain,
+                            xp_info = xp_info)
 
 @app.route('/analyze', methods=['POST'])
 @login_required

@@ -30,3 +30,10 @@ def save_user_avatar_ser(user_id, path):
         session=db_session,
         user_id=user_id,
         path=path)
+
+def update_user_xp_ser(user_id, xp_gain):
+    return update_user_xp_repo(
+        session=db_session,
+        user_id=user_id,
+        xp_gain=xp_gain
+    )

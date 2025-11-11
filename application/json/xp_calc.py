@@ -1,9 +1,12 @@
-from jsonModules import json_data
+from application.json.jsonModules import json_data
+from helper_functions import get_json_data_recipe
+
+
 def calculate_xp(recipe_index, user_time_minutes, image_compare_score):
-    total_time = json_data(recipe_index, "prepTimeMinutes") + json_data(recipe_index, "cookTimeMinutes")
+    total_time = get_json_data_recipe(recipe_index, "prepTimeMinutes") + get_json_data_recipe(recipe_index, "cookTimeMinutes")
     time_grade, image_grade, grade_mult, image_bonus = None, None, None, None
     time_score = (total_time / user_time_minutes)*100
-    difficulty = json_data(recipe_index, "difficulty")
+    difficulty = get_json_data_recipe(recipe_index, "difficulty")
     print(difficulty)
     match image_compare_score:
         case a if 90 <= a <= 100 or a > 100:
