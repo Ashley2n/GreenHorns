@@ -1,6 +1,6 @@
-from domain.DTOs import CreateUserDto, UpdateUserDto
+from Entities.DTOs import CreateUserDto, UpdateUserDto
 from infrastructure.CRUD import *
-from domain.models import db_session
+from Entities.models import db_session
 
 def create_user_ser(user_dto: CreateUserDto):
     return create_user_repo(db_session, user_dto.username, user_dto.password, user_dto.email)
@@ -30,3 +30,10 @@ def save_user_avatar_ser(user_id, path):
         session=db_session,
         user_id=user_id,
         path=path)
+
+def update_user_xp_ser(user_id, xp_gain):
+    return update_user_xp_repo(
+        session=db_session,
+        user_id=user_id,
+        xp_gain=xp_gain
+    )

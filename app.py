@@ -1,6 +1,9 @@
 import base64
 import os
+import random
 
+import cv2
+import numpy as np
 from flask import Flask, render_template, request, flash, redirect, url_for, session, jsonify
 from flask_login import logout_user, LoginManager, login_user, current_user, login_required
 from flask_wtf import CSRFProtect
@@ -10,26 +13,33 @@ from werkzeug.utils import secure_filename
 from APIs.api_recipes_call import load_more_recipes_with_difficulty, load_difficulties, get_all_recipes, \
     load_more_recipes, load_specific_recipe
 from APIs.api_recipes_call import load_more_recipes
-from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser
+from application.json.xp_calc import calculate_xp
+from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser, update_user_xp_ser
 from client.forms.ImageUploadForm import ImageUploadForm
 from application.services import create_user_ser, get_user_by_username_ser, get_user_by_id_ser, save_user_avatar_ser
 from domain.DTOs import CreateUserDto
 from client.forms.LoginForm import LoginForm
 from client.forms.RegisterForm import RegisterForm
-from helper_functions import decrypt_password, encrypt_password, get_recipe_image
-from image_analyzer import analyze_image, compare_images
+from helper_functions import decrypt_password, encrypt_password, get_recipe_image, calculate_level
+from image_analyzer import analyze_image, compare_images, buffer_file
 from helper_functions import decrypt_password, encrypt_password, get_json_data_recipe, game_screen_data
 
-app = Flask(__name__, template_folder='client/templates')
+app = Flask(__name__, template_folder='client/templates', static_folder='client/static')
 
-app = Flask(__name__, template_folder='client/templates')
+
+# Config
+app.config['COMPARE_UPLOAD_FOLDER'] = os.path.join('client', 'static', 'uploads')
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB
+app.config['UPLOAD_FOLDER'] = 'client/static/uploads'
+
+
 UPLOAD_FOLDER = 'client/static/avatars'
 
+# Ensure upload directory exists on Render runtime
+os.makedirs(app.config['COMPARE_UPLOAD_FOLDER'], exist_ok=True)
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app = Flask(__name__, template_folder='client/templates', static_folder='client/static')
-app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB
 app.secret_key = 'CookQuestApp001'
-app.config['UPLOAD_FOLDER'] = 'client/static/uploads'
 
 csrf = CSRFProtect(app)
 
@@ -94,6 +104,7 @@ def register():
     return render_template('auth/register.html', form=form)
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     session.clear()
@@ -103,39 +114,87 @@ def logout():
 @app.route('/profile')
 @login_required
 def profile():
-    render_template('profile/index.html', user=get_user_by_id_ser(current_user.id))
+    calculated_user_xp = calculate_level(total_xp=current_user.xp)
+    return render_template(
+        'profile/index.html',
+                            user=get_user_by_id_ser(current_user.id),
+                            xp_info=calculated_user_xp)
 
 
 @app.route('/compare_images/<int:cuisine_id>', methods=['GET', 'POST'])
+@login_required
 def upload_page(cuisine_id):
     form = ImageUploadForm()
+    file = None
+    xp_gain = None
+    xp_info = None
     results = None
     similarity = None
 
     if form.validate_on_submit():
-        print("Hi welcome to comparing Images")
         file = form.image.data
-        filename = secure_filename(file.filename)
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(image_path)
 
-        # Example API call to get reference image
-        # Getting Image from API
-        reference_path = get_recipe_image(cuisine_id)
+        if file is None or file.filename == '':
+            return "No file Uploaded", 400
 
+        print("File received:", file.filename)
 
-        # Analyze and compare
-        results = analyze_image(image_path)
-        similarity = compare_images(image_path, reference_path)
+        try:
+            # Getting Image from API
+            reference_path = get_recipe_image(cuisine_id)
+            file_bytes = buffer_file(file)
 
-        print("References: ", reference_path)
-        print("Results: ", results)
-        print("Similarity: ", similarity)
+            # Analyze and compare
+            results = analyze_image(img1=file_bytes)
 
-    return render_template('game/upload.html', form=form, results=results, similarity=similarity)
+            file.seek(0)  # Reset file pointer to beginning
+            file_bytes_compare = buffer_file(file)
+            similarity = compare_images(img1=file_bytes_compare, img2_dict=reference_path)
 
+            print(similarity['similarity'])
+
+            # Calculate XP
+            xp_value = calculate_xp(recipe_index=cuisine_id,
+                                    user_time_minutes=random.randint(10, 100),
+                                    image_compare_score=similarity['similarity'])
+            xp_gain = xp_value
+
+            updated_user_xp = update_user_xp_ser(current_user.id, xp_value)
+
+            calculated_user_xp = calculate_level(total_xp=updated_user_xp.xp)
+            xp_info = calculated_user_xp
+
+            print("References: ", reference_path)
+            print("Results: ", results)
+            print("Similarity: ", similarity)
+
+            return render_template(
+                'game/upload.html',
+                form=form,
+                results=results,
+                similarity=similarity,
+                cuisine_id=cuisine_id,
+                recipes_image=get_recipe_image(cuisine_id)['image_url'],
+                user_image = file.filename,
+                xp_gain = xp_gain,
+                xp_info = xp_info)
+
+        except Exception as e:
+            print(f"Error processing image: {str(e)}")
+            return f"Error processing image: {str(e)}", 500
+
+    return render_template(
+        'game/upload.html',
+                           form=form,
+                           results=results,
+                           similarity=similarity,
+                           cuisine_id=cuisine_id,
+                            recipes_image = get_recipe_image(cuisine_id)['image_url'],
+                            xp_gain = xp_gain,
+                            xp_info = xp_info)
 
 @app.route('/analyze', methods=['POST'])
+@login_required
 def analyze():
     if 'image' not in request.files:
         return "No file uploaded", 400
@@ -144,18 +203,28 @@ def analyze():
     if file.filename == '':
         return "No selected file", 400
 
-    image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(image_path)
+    # Read the uploaded file directly into memory
+    file_bytes = np.frombuffer(file.read(), np.uint8)
+    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
-    results = analyze_image(image_path)
+    if img is None:
+        return "Error decoding image", 400
+
+    # image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+
+    # file.save(image_path)
+
+    results = analyze_image(img)
 
     return render_template('result.html', results=results, filename=file.filename)
 
 @app.route('/upload')
+@login_required
 def upload():
     return render_template('game/uploadtest.html')
 
 @app.route('/compare', methods=['POST'])
+@login_required
 def compare():
     img1 = request.files['image1']
     img2 = request.files['image2']
@@ -243,13 +312,17 @@ def select(difficulty, cuisine):
 def avatar_create():
     return render_template('profile/avatar_maker/index.html')
 
-@app.route('/game/game_screen/<id>')
+@app.route('/game/game_screen/<int:recipe_id>')
 @login_required
-def game_screen(id):
-    specific_recipe = load_specific_recipe(id)
+def game_screen(recipe_id):
+    specific_recipe = load_specific_recipe(recipe_id)
     print(specific_recipe)
 
     return render_template('game/game_screen.html', recipe=specific_recipe)
+
+@app.route('/credits')
+def credits():
+    return render_template('/game/credits.html')
 
 @login_manager.user_loader
 def load_user(user_id):

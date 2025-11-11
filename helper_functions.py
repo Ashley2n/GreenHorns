@@ -62,3 +62,28 @@ def get_recipe_image(recipe_index):
     return {
         'image_url' : get_json_data_recipe(recipe_index, "image"),
     }
+
+
+def calculate_level(total_xp):
+    """Simple level calculation - each level requires 100 more XP than the last"""
+    level = 1
+    xp_needed = 0
+
+    while total_xp >= xp_needed:
+        xp_for_next_level = level * 100  # Level 1: 100, Level 2: 200, Level 3: 300, etc.
+        if total_xp < xp_for_next_level:
+            break
+        total_xp -= xp_for_next_level
+        level += 1
+
+    # After the loop:
+    # - level = current level
+    # - total_xp = XP earned in current level
+    # - xp_for_next_level = XP needed to reach next level
+
+    return {
+        "level": level,
+        "current_xp": total_xp,
+        "xp_needed": level * 100,
+        "progress": (total_xp / (level * 100)) * 100
+    }
