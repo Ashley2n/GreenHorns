@@ -288,6 +288,10 @@ def game_screen(recipe_id):
 
     return render_template('game/game_screen.html', recipe=specific_recipe)
 
+@app.route('/credits')
+def credits():
+    return render_template('/game/credits.html')
+
 @login_manager.user_loader
 def load_user(user_id):
     return get_user_by_id_ser(user_id)
